@@ -1,0 +1,26 @@
+Place this form in _Layout.cshtml
+
+<form id="__AjaxAntiForgeryForm" action="#" method="post">@Html.AntiForgeryToken()</form>
+
+Bundle a javascript file called layout.js and render it in the foot of the _Layout.cshtml file.
+
+@Scripts.Render("~/myapp/global/layout.js");
+
+Include a call to the AddAntiForgeryToken() method in your jQuery ajax POST if you are not submitting a <form>
+
+$('#group-save').on('click', function() {
+                    var _this = this;
+                    var url = "/Group/ManageGeneral/";
+                    var postData = AddAntiForgeryToken() +'&email=' + $('#email');
+                      $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: postData,
+                        success: function (result) {
+                            _this.$section = $(result).replaceAll($('#generalform'));
+                            GroupManagement.prototype.init();
+                        },
+                    });
+                });
+
+If you ARE submitting a form via ajax then just make sure it has @Html.AntiforgeryToken() in the <form> tag and you don't need to include a call to AddAnjtiForgeryToken() in your request.
